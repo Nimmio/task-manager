@@ -17,6 +17,7 @@ const sessionTokenExistsAndPathIsNotIgnored = async (
   const isIgnored = await pathIstIgnored(ignoredPaths, pathname);
   if (isIgnored) return true;
   const sessionCookie = getSessionCookie(request);
+  console.log("sessionCookie", sessionCookie);
   if (!sessionCookie) {
     return false;
   }
