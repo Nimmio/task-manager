@@ -21,7 +21,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import signup from "@/lib/auth/sign-up";
+import { signUp } from "@/lib/auth/functions";
+import { useState } from "react";
+import { redirect } from "next/navigation";
+import { AlertComponent } from "./alert-component";
 
 const formSchema = z.object({
   email: z
@@ -36,6 +39,9 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"div">) {
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string>("");
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,11 +51,22 @@ export function SignupForm({
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    signup(values);
+    setLoading(true);
+    signUp(values).then(({ success, error }) => {
+      if (success) {
+        setError("");
+        redirect("/");
+      }
+      setError(error?.message || "");
+      setLoading(false);
+    });
   }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      {error !== "" && (
+        <AlertComponent description={error} title="Login Error" type="error" />
+      )}
       <Card>
         <CardHeader>
           <CardTitle className="text-2xl">Sign Up</CardTitle>
@@ -67,7 +84,7 @@ export function SignupForm({
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="" {...field} />
+                          <Input placeholder="" disabled={loading} {...field} />
                         </FormControl>
                         <FormDescription>This is your Email</FormDescription>
                         <FormMessage />
@@ -83,7 +100,12 @@ export function SignupForm({
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input placeholder="" type="password" {...field} />
+                          <Input
+                            placeholder=""
+                            type="password"
+                            disabled={loading}
+                            {...field}
+                          />
                         </FormControl>
                         <FormDescription>This is your Password</FormDescription>
                         <FormMessage />
@@ -91,7 +113,7 @@ export function SignupForm({
                     )}
                   />
                 </div>
-                <Button type="submit" className="w-full">
+                <Button type="submit" disabled={loading} className="w-full">
                   Create
                 </Button>
               </div>

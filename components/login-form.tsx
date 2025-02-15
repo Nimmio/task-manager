@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
-import signIn from "@/lib/auth/sign-in";
+import { signIn } from "@/lib/auth/functions";
 import { useState } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";

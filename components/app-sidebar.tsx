@@ -9,10 +9,13 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Calendar, Home, Inbox, Search, Settings } from "lucide-react";
+import { Home } from "lucide-react";
 import AppSidebarUser from "./app-sidebar-user";
+import { getCurrentUsername } from "@/lib/auth/functions";
+import { authClient } from "@/lib/auth/auth-client";
+
 export function AppSidebar() {
-  const items = [
+  const Items = [
     {
       title: "Home",
       url: "/",
@@ -27,7 +30,7 @@ export function AppSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {items.map((item) => (
+              {Items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url}>
