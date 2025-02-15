@@ -1,7 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { cn } from "@/lib/utils";
+import { cn, stringIsEmail } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,10 +21,15 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
+import signup from "@/lib/auth/sign-up";
 
 const formSchema = z.object({
-  username: z.string().min(4).max(50),
-  password: z.string().min(4).max(50),
+  email: z
+    .string()
+    .min(4)
+    .max(50)
+    .refine((value) => stringIsEmail(value), "Not a valid Email"),
+  password: z.string().min(8).max(32),
 });
 
 export function SignupForm({
@@ -34,13 +39,13 @@ export function SignupForm({
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
+    signup(values);
   }
 
   return (
@@ -57,14 +62,14 @@ export function SignupForm({
                 <div className="grid gap-2">
                   <FormField
                     control={form.control}
-                    name="username"
+                    name="email"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
                           <Input placeholder="" {...field} />
                         </FormControl>
-                        <FormDescription>This is your Username</FormDescription>
+                        <FormDescription>This is your Email</FormDescription>
                         <FormMessage />
                       </FormItem>
                     )}

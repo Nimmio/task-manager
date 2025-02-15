@@ -1,27 +1,22 @@
+import { redirect } from "next/navigation";
 import { authClient } from "./auth-client";
 
-const signup = async (params) => {
-  const { username, password } = params;
+const signUp = async (params) => {
+  const { email, password } = params;
 
   const { data, error } = await authClient.signUp.email(
     {
-      username,
+      email,
       password,
+      name: email,
       callbackURL: "/",
     },
     {
-      onRequest: (ctx) => {
-        //show loading
-      },
       onSuccess: (ctx) => {
-        //redirect to the dashboard or sign in page
-      },
-      onError: (ctx) => {
-        // display the error message
-        alert(ctx.error.message);
+        redirect("/");
       },
     }
   );
 };
 
-export default signup;
+export default signUp;
