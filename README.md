@@ -1,7 +1,8 @@
-#Task Manager Tool
+# Task Managment Tool
 
 Ein einfaches, flexibles Tool zum Verwalten von Aufgaben (Tasks), entwickelt mit modernen Webtechnologien. Dieses Projekt ist noch im sehr frühen Stadium und wird regelmäßig weiterentwickelt.
-##🚀 Technologien
+
+## 🚀 Technologien
 
 Das Tool wurde unter Verwendung folgender Technologien entwickelt:
 
@@ -13,4 +14,3 @@ Das Tool wurde unter Verwendung folgender Technologien entwickelt:
 - Prisma
 - PostgreSQL
 - Better-Auth
-- Zustand
