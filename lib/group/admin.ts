@@ -11,7 +11,7 @@ export const createGroupAdminIfNotExists = async (userId: string | null) => {
 };
 
 const groupAdminExists = async (): Promise<boolean> => {
-  const adminGroup = await prisma.groups.findFirst({
+  const adminGroup = await prisma.group.findFirst({
     where: {
       isAdmin: true,
     },
@@ -20,7 +20,7 @@ const groupAdminExists = async (): Promise<boolean> => {
 };
 
 const createGroupAdmin = async (): Promise<Groups> => {
-  const adminGroup = await prisma.groups.create({
+  const adminGroup = await prisma.group.create({
     data: {
       title: "Admin",
       isAdmin: true,
@@ -34,13 +34,21 @@ const addUserToAdminGroup = async (params: {
   userId: string;
 }) => {
   const { group, userId } = params;
-  const adminGroup = await prisma.groups.update({
+  const adminGroup = await prisma.group.update({
     where: {
       id: group.id,
     },
     data: {
       Users: {
-        connect: [{ id: userId }],
+        create: [
+          {
+            user: {
+              connect: {
+                id: userId,
+              },
+            },
+          },
+        ],
       },
     },
   });

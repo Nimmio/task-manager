@@ -1,7 +1,9 @@
 import { authClient } from "./auth-client";
 import { redirect } from "next/navigation";
-import { auth } from "./auth";
 import { createGroupAdminIfNotExists } from "../group/admin";
+import { auth } from "./auth";
+import { Group, PrismaClient } from "@prisma/client";
+import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 
 interface signInParams {
   email: string;
@@ -61,4 +63,53 @@ export const signUp = async (params: signUpParams): Promise<authReturns> => {
     success: error === null,
     error: error,
   };
+};
+
+const currentUserId = async (
+  headers: () => Promise<ReadonlyHeaders>
+): Promise<string | null> => {
+  const session = await auth.api.getSession({
+    headers: await headers(), // you need to pass the headers object.
+  });
+
+  if (session === null) return null;
+
+  const { userId } = session.session;
+  return userId;
+};
+
+const getGroupsForUserId = async (userId: string): Promise<Group[]> => {
+  const prisma = new PrismaClient();
+
+  return await prisma.group.findMany({
+    where: {
+      Users: {
+        some: {
+          userId,
+        },
+      },
+    },
+  });
+};
+
+export const currentUserisAdmin = async (
+  headers: () => Promise<ReadonlyHeaders>
+): Promise<boolean> => {
+  let returnValue = false;
+
+  const userId = await currentUserId(headers);
+
+  if (userId === null) return false;
+
+  const groups = await getGroupsForUserId(userId);
+
+  groups.every((group) => {
+    if (group.isAdmin) {
+      returnValue = true;
+      return false;
+    }
+    return true;
+  });
+
+  return returnValue;
 };

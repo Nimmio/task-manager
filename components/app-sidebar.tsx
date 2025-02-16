@@ -9,19 +9,30 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import { Home } from "lucide-react";
+import { Home, Shield } from "lucide-react";
 import AppSidebarUser from "./app-sidebar-user";
-import { getCurrentUsername } from "@/lib/auth/functions";
-import { authClient } from "@/lib/auth/auth-client";
+import { currentUserisAdmin } from "@/lib/auth/functions";
+import { headers } from "next/headers";
 
-export function AppSidebar() {
-  const Items = [
+export async function AppSidebar() {
+  const isAdmin = await currentUserisAdmin(headers);
+  const DefaultItems = [
     {
       title: "Home",
       url: "/",
       icon: Home,
     },
   ];
+
+  const AdminItems = [
+    {
+      title: "Admin",
+      url: "/admin",
+      icon: Shield,
+    },
+  ];
+
+  const Items = isAdmin ? DefaultItems.concat(AdminItems) : DefaultItems;
 
   return (
     <Sidebar>

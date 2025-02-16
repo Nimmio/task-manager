@@ -21,7 +21,7 @@ model Todo {
 }
 
 model User {
-  id            String    @id
+  id            String         @id
   name          String
   email         String
   emailVerified Boolean
@@ -30,9 +30,8 @@ model User {
   updatedAt     DateTime
   sessions      Session[]
   accounts      Account[]
-  Todo          Todo[]
-  Groups        Groups?   @relation(fields: [groupsId], references: [id])
-  groupsId      Int?
+  Todos         Todo[]
+  Groups        GroupOnUsers[]
 
   @@unique([email])
   @@map("user")
@@ -83,9 +82,19 @@ model Verification {
   @@map("verification")
 }
 
-model Groups {
-  id    Int    @id @default(autoincrement())
-  title String
-  Users User[]
-  isAdmin Boolean @default(false)
+model Group {
+  id      Int            @id @default(autoincrement())
+  title   String
+  isAdmin Boolean        @default(false)
+  Users   GroupOnUsers[]
+}
+
+model GroupOnUsers {
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+  group      Group    @relation(fields: [groupId], references: [id])
+  groupId    Int
+  assignedAt DateTime @default(now())
+
+  @@id([userId, groupId])
 }
