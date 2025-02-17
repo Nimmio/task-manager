@@ -1,9 +1,11 @@
+"use server";
 import { authClient } from "./auth-client";
 import { redirect } from "next/navigation";
 import { createGroupAdminIfNotExists } from "../group/admin";
 import { auth } from "./auth";
-import { Group, PrismaClient } from "@prisma/client";
+import { Group } from "@prisma/client";
 import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
+import prisma from "../prisma";
 
 interface signInParams {
   email: string;
@@ -79,8 +81,6 @@ const currentUserId = async (
 };
 
 const getGroupsForUserId = async (userId: string): Promise<Group[]> => {
-  const prisma = new PrismaClient();
-
   return await prisma.group.findMany({
     where: {
       Users: {
