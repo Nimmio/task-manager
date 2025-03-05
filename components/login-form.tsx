@@ -46,14 +46,7 @@ export function LoginForm({
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true);
-    signIn(values).then(({ success, error }) => {
-      if (success) {
-        setError("");
-        redirect("/");
-      }
-      setError(error?.message || "");
-      setLoading(false);
-    });
+    signIn(values);
   }
 
   return (

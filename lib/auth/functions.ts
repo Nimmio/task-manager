@@ -27,18 +27,13 @@ interface authReturns {
   } | null;
 }
 
-export const signIn = async (params: signInParams): Promise<authReturns> => {
+export const signIn = async (params: signInParams) => {
   const { email, password } = params;
 
-  const { error } = await authClient.signIn.email({
+  await authClient.signIn.email({
     email,
     password,
   });
-
-  return {
-    success: error === null,
-    error: error,
-  };
 };
 
 export const signOut = async (): Promise<authReturns> => {
